@@ -71,6 +71,13 @@ QByteArray ComportDevice::ReadAll()
 
 }
 //==================================================================================================
+
+bool ComportDevice::IsOpen()
+{
+    return  _comport.isOpen();
+
+}
+//==================================================================================================
 void ComportDevice::ReadyRead()
 {
 _reply+=_comport.readAll();

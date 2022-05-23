@@ -6,7 +6,7 @@
 #include <QSerialPort>
 #include <QDebug>
 #include "ManualModbus.h"
-
+#include "Types.h"
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -34,6 +34,12 @@ private slots:
     void on_BtnSetSpeed_clicked();
 
     void on_BtnSetFeederPower_clicked();
+
+    void on_BtnSetAlarm_clicked();
+
+    void on_BtnSetAlarm_3_clicked();
+
+    void on_BtnSetAlarm_2_clicked();
 
 private:
     Ui::MainWindow *ui;

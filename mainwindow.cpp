@@ -29,9 +29,8 @@ void MainWindow::ComportRedyRead()
 void MainWindow::on_dial_sliderMoved(int position)
 {
     ui->spinBox->setValue(position);
-}
+ }
 
-//=================================================================================================
 
 //=======================================================================================================
 void MainWindow::on_BtnPort_clicked()
@@ -63,12 +62,41 @@ void MainWindow::on_BtnPort_clicked()
 
 void MainWindow::on_BtnSetSpeed_clicked()
 {
-_modbus.SetFeederSpeed(ui->NumChute->value(),ui->spinBox->value());
-}
+    if(!_modbus.SetFeederSpeed(ui->NumChute->value(),ui->spinBox->value()))
+    {
+     ui->statusbar->showMessage("communication error check connection!");
+    }
 
+}
+//=================================================================================================
 void MainWindow::on_BtnSetFeederPower_clicked()
 {
     static bool stat=false;
     stat=!stat;
    _modbus.SetFeederPower(ui->NumChute->value(),stat);
+}
+//=================================================================================================
+
+void MainWindow::on_BtnSetAlarm_clicked()
+{
+    static bool stat=false;
+    stat=!stat;
+       _modbus.SetChuteAlarm(ManualModbus::AlarmColor::Red,stat);
+       qDebug()<<"r";
+}
+
+
+void MainWindow::on_BtnSetAlarm_2_clicked()
+{
+    static bool stat=false;
+    stat=!stat;
+        _modbus.SetChuteAlarm(ManualModbus::AlarmColor::Green,stat);
+        qDebug()<<"g";
+}
+void MainWindow::on_BtnSetAlarm_3_clicked()
+{
+    static bool stat=false;
+    stat=!stat;
+    _modbus.SetChuteAlarm(ManualModbus::AlarmColor::Yellow,stat);
+    qDebug()<<"y";
 }

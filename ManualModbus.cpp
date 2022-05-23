@@ -201,6 +201,8 @@ qDebug()<<"send.......................";
 //=================================================================================================
 bool ManualModbus::SetFeederSpeed(int chuteID, int speed)
 {
+    if(_comport==nullptr)return false;
+    if(!_comport->IsOpen())return false;
 //speed=0x1d 00 1d 1e 1f 21 22 23;   01 06 00 00 00 1f c8 02
     qDebug()<<"set feeder SPEED "<<chuteID<<" speed="<<speed;
     if(_meteringMutex.tryLock(1000))
@@ -276,9 +278,9 @@ bool ManualModbus::SetFeederPower(int chuteID, int state)
 //=================================================================================================
 bool ManualModbus::SetChuteAlarm(ManualModbus::AlarmColor color,int value)
 {
-    return true;
+
     WaitMs(1);
-    //qDebug()<<"====================SetChuteAlarm clicked llll ";
+    qDebug()<<"====================SetChuteAlarm clicked llll ";
     QByteArray reply;
     if(_meteringMutex.tryLock(1000))
     {
@@ -286,7 +288,7 @@ bool ManualModbus::SetChuteAlarm(ManualModbus::AlarmColor color,int value)
         // qDebug()<<"SetChuteAlarm not busy: "<<QThread::currentThreadId();
         if(color==AlarmColor::Green){
 
-            reply+=SendCommands(CreateModbusWritePacket(100,0x06,0,value),100);
+            reply+=SendCommands(CreateModbusWritePacket(100,0x06,2,value),100);
             //                reply+=SendCommand(CreateModbusWritePacket(100,0x06,1,0),100);
             //                reply+=SendCommand(CreateModbusWritePacket(100,0x06,2,0),100);
         }
@@ -294,11 +296,11 @@ bool ManualModbus::SetChuteAlarm(ManualModbus::AlarmColor color,int value)
         {
             //                 reply+=SendCommand(CreateModbusWritePacket(100,0x06,0,0),100);
             //                 reply+=SendCommand(CreateModbusWritePacket(100,0x06,1,0),100);
-            reply+=SendCommands(CreateModbusWritePacket(100,0x06,2,value),100);
+            reply+=SendCommands(CreateModbusWritePacket(100,0x06,1,value),100);
         }
         else {
             // reply+=SendCommand(CreateModbusWritePacket(100,0x06,0,0),100);
-            reply+=SendCommands(CreateModbusWritePacket(100,0x06,1,value),100);
+            reply+=SendCommands(CreateModbusWritePacket(100,0x06,0,value),100);
             // reply+=SendCommand(CreateModbusWritePacket(100,0x06,2,0),100);
         }
         _meteringMutex.unlock();

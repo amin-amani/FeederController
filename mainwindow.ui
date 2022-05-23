@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>439</width>
-    <height>466</height>
+    <width>795</width>
+    <height>452</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -60,7 +60,7 @@
      </rect>
     </property>
     <property name="maximum">
-     <number>600</number>
+     <number>100</number>
     </property>
    </widget>
    <widget class="QSpinBox" name="spinBox">
@@ -154,13 +154,52 @@
      <string>Set Power</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="BtnSetAlarm">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>40</y>
+      <width>89</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Set Alarm</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="BtnSetAlarm_2">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>80</y>
+      <width>89</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Green</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="BtnSetAlarm_3">
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>120</y>
+      <width>89</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Yellow</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>439</width>
+     <width>795</width>
      <height>22</height>
     </rect>
    </property>

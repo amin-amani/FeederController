@@ -13,10 +13,22 @@
 class ManualModbus : public QObject
 {
     Q_OBJECT
+
+    QString _portName;
+
+    QMutex _meteringMutex;
+    QWaitCondition _meteringWait;
+    int _baudeRate;
+    ComportDevice *_comport=nullptr;
+    QFile *_gpioFile;
+    QByteArray ModbusCRC(QByteArray data);
+    QByteArray CreateModbusWritePacket(int id, int registerType, int registerAddress, int value);
+    ModbusReadingParameters ReadModbusValues();
+public:
     enum AlarmColor
-    {     Red=0,
-          Green,
-          Yellow,
+    {     Green=0,
+          Red=1,
+          Yellow=2,
           RedGreen,
           Off
     };
@@ -39,17 +51,6 @@ class ManualModbus : public QObject
         BottomCamera2=0x03
     };
 
-    QString _portName;
-
-    QMutex _meteringMutex;
-    QWaitCondition _meteringWait;
-    int _baudeRate;
-    ComportDevice *_comport;
-    QFile *_gpioFile;
-    QByteArray ModbusCRC(QByteArray data);
-    QByteArray CreateModbusWritePacket(int id, int registerType, int registerAddress, int value);
-    ModbusReadingParameters ReadModbusValues();
-public:
     explicit ManualModbus(QObject *parent = nullptr);
 
     explicit ManualModbus(QString portName , int baudRate, int updateRate=1000);
