@@ -3,8 +3,8 @@
 ManualModbus::ManualModbus(QObject *parent) : QObject(parent)
 {
 
-    _comport=new ComportDevice();
-    qDebug()<<"creating comport device";
+
+
 }
 //=================================================================================================
 ManualModbus::ManualModbus(QString portName, int baudRate, int updateRate)
@@ -52,16 +52,16 @@ bool ManualModbus::Init(QString name, int baudRate)
 {
 
 
-    //    connect(_comport, SIGNAL(PacketCompleted( QByteArray)), this, SLOT(SerialPacketCompleted(QByteArray)));
-    _gpioFile=new QFile();
-    _gpioFile->setFileName("/sys/class/gpio/gpio232/value");
-    if(!_gpioFile->open(QFile::ReadWrite))
-    {
-        qDebug()<<"unable to open modbus write pin";
+//    //    connect(_comport, SIGNAL(PacketCompleted( QByteArray)), this, SLOT(SerialPacketCompleted(QByteArray)));
+//    _gpioFile=new QFile();
+//    _gpioFile->setFileName("/sys/class/gpio/gpio232/value");
+//    if(!_gpioFile->open(QFile::ReadWrite))
+//    {
+//        qDebug()<<"unable to open modbus write pin";
 
-    }
-    SetDirection(true);
-    return _comport->Init(name,baudRate);
+//    }
+//    SetDirection(true);
+//    return _comport->Init(name,baudRate);
 
 //    while (true) {
 //        WaitMs(1000);
@@ -84,8 +84,43 @@ bool ManualModbus::Init(QString name, int baudRate)
 
 
 //    }
-
+    return true;
 }
+//=================================================================================================
+
+void ManualModbus::Start()
+{
+    //    connect(_comport, SIGNAL(PacketCompleted( QByteArray)), this, SLOT(SerialPacketCompleted(QByteArray)));
+    _gpioFile=new QFile();
+    _gpioFile->setFileName("/sys/class/gpio/gpio232/value");
+    if(!_gpioFile->open(QFile::ReadWrite))
+    {
+        qDebug()<<"unable to open modbus write pin";
+
+    }
+    _comport=new ComportDevice();
+    SetDirection(true);
+     if(!_comport->Init(_portName,_baudeRate))
+     {
+         emit ErrorConnection(0);
+         qDebug()<<"emit error connection";
+         return;
+     }
+    _working=true;
+    while (_working)
+    {
+    qDebug()<<"check";
+    QThread::msleep(1000);
+    }
+    _comport->Close();
+    qDebug()<<"closing port";
+}
+
+void ManualModbus::Stop()
+{
+    _working=false;
+}
+
 //=================================================================================================
 QByteArray ManualModbus::ModbusCRC(QByteArray data)
 {
@@ -122,7 +157,7 @@ int16_t ManualModbus::ReadParameter(int id,int registerType,int addres,int val)
     if(rx.length()<1){
         //  qDebug()<<"read error";
         return result;}
-    // else qDebug()<<"<--"<<rx.toHex();
+     else qDebug()<<"<--"<<rx.toHex();
     result=(rx[3]&0xff);
     result<<=8;
     result+=(rx[4]&0xff);
@@ -130,26 +165,28 @@ int16_t ManualModbus::ReadParameter(int id,int registerType,int addres,int val)
     return result;
 }
 //=================================================================================================
-ModbusReadingParameters ManualModbus::ReadModbusValues()
+void ManualModbus::ReadModbusValues()
 {
     static ModbusReadingParameters result;
     static int statCount=0;
+    if(_comport==nullptr)return ;
+    if(!_comport->IsOpen())return ;
+  result.AirPressure= ReadParameter(100,(uint8_t)ModbusRegisterTypes::Reading,(uint8_t)SorterRegisters::PresureSensor,0);
 
-    if(statCount==0)result.AirPressure= ReadParameter(100,(uint8_t)ModbusRegisterTypes::Reading,(uint8_t)SorterRegisters::PresureSensor,1);
-    // qDebug()<<"Air="<<result.AirPressure;
-    if(statCount==1)result.TopCameraTemp1= ReadParameter(100,(uint8_t)ModbusRegisterTypes::Reading,(uint8_t)SorterRegisters::TopCamera1,1);
-    //  qDebug()<<"TopCameraTemp1="<<result.TopCameraTemp1;
-    if(statCount==2)result.TopCameraTemp2= ReadParameter(100,(uint8_t)ModbusRegisterTypes::Reading,(uint8_t)SorterRegisters::TopCamera2,1);
-    //   qDebug()<<"TopCameraTemp2="<<result.TopCameraTemp2;
-    if(statCount==3)result.ProcessorTemp= ReadParameter(100,(uint8_t)ModbusRegisterTypes::Reading,(uint8_t)SorterRegisters::ProcessorTemp,1);
+  //   qDebug()<<"Air="<<result.AirPressure;
+//    result.TopCameraTemp1= ReadParameter(100,(uint8_t)ModbusRegisterTypes::Reading,(uint8_t)SorterRegisters::TopCamera1,1);
+//    //  qDebug()<<"TopCameraTemp1="<<result.TopCameraTemp1;
+//   result.TopCameraTemp2= ReadParameter(100,(uint8_t)ModbusRegisterTypes::Reading,(uint8_t)SorterRegisters::TopCamera2,1);
+//    //   qDebug()<<"TopCameraTemp2="<<result.TopCameraTemp2;
+//    result.ProcessorTemp= ReadParameter(100,(uint8_t)ModbusRegisterTypes::Reading,(uint8_t)SorterRegisters::ProcessorTemp,1);
 
-    //qDebug()<<"ProcessorTemp="<<result.ProcessorTemp;
-    if(statCount==4)result.BottomCameraTemp1= ReadParameter(100,(uint8_t)ModbusRegisterTypes::Reading,(uint8_t)SorterRegisters::BottomCamera1,1);
-    // qDebug()<<"BottomCameraTemp1="<< result.BottomCameraTemp1;
-    if(statCount==5)result.BottomCameraTemp2= ReadParameter(100,(uint8_t)ModbusRegisterTypes::Reading,(uint8_t)SorterRegisters::BottomCamera2,1);
-    // qDebug()<<"BottomCameraTemp2="<< result.BottomCameraTemp2;
-    if(statCount++>5)statCount=0;
-    return result;
+//    //qDebug()<<"ProcessorTemp="<<result.ProcessorTemp;
+//    result.BottomCameraTemp1= ReadParameter(100,(uint8_t)ModbusRegisterTypes::Reading,(uint8_t)SorterRegisters::BottomCamera1,1);
+//    // qDebug()<<"BottomCameraTemp1="<< result.BottomCameraTemp1;
+//    result.BottomCameraTemp2= ReadParameter(100,(uint8_t)ModbusRegisterTypes::Reading,(uint8_t)SorterRegisters::BottomCamera2,1);
+//    // qDebug()<<"BottomCameraTemp2="<< result.BottomCameraTemp2;
+emit ReadyRead(result);
+
 
 }
 //=================================================================================================
@@ -201,6 +238,7 @@ qDebug()<<"send.......................";
 //=================================================================================================
 bool ManualModbus::SetFeederSpeed(int chuteID, int speed)
 {
+        qDebug()<<"set feeder SPEED start";
     if(_comport==nullptr)return false;
     if(!_comport->IsOpen())return false;
 //speed=0x1d 00 1d 1e 1f 21 22 23;   01 06 00 00 00 1f c8 02
@@ -243,13 +281,13 @@ bool ManualModbus::SetFeederPower(int chuteID, int state)
         if(state==0)
         {
             reply=SendCommands(CreateModbusWritePacket(chuteID,0x06,0x01,0x0001),10);
-//            qDebug()<<"replay:"<<_comport->_reply.toHex();
+            qDebug()<<"replay:"<<_comport->_reply.toHex();
 
         }
         else
         {
             reply=SendCommands(CreateModbusWritePacket(chuteID,0x06,0x01,0x0000),10);
-////            qDebug()<<"replay:"<<_comport->_reply.toHex();
+            qDebug()<<"replay:"<<_comport->_reply.toHex();
         }
         _meteringMutex.unlock();
 //    }
@@ -280,7 +318,7 @@ bool ManualModbus::SetChuteAlarm(ManualModbus::AlarmColor color,int value)
 {
 
     WaitMs(1);
-    qDebug()<<"====================SetChuteAlarm clicked llll ";
+//    qDebug()<<"====================SetChuteAlarm clicked llll ";
     QByteArray reply;
     if(_meteringMutex.tryLock(1000))
     {
@@ -289,6 +327,7 @@ bool ManualModbus::SetChuteAlarm(ManualModbus::AlarmColor color,int value)
         if(color==AlarmColor::Green){
 
             reply+=SendCommands(CreateModbusWritePacket(100,0x06,2,value),100);
+                   qDebug()<<"replay:"<<_comport->_reply.toHex();
             //                reply+=SendCommand(CreateModbusWritePacket(100,0x06,1,0),100);
             //                reply+=SendCommand(CreateModbusWritePacket(100,0x06,2,0),100);
         }
@@ -297,54 +336,17 @@ bool ManualModbus::SetChuteAlarm(ManualModbus::AlarmColor color,int value)
             //                 reply+=SendCommand(CreateModbusWritePacket(100,0x06,0,0),100);
             //                 reply+=SendCommand(CreateModbusWritePacket(100,0x06,1,0),100);
             reply+=SendCommands(CreateModbusWritePacket(100,0x06,1,value),100);
+                   qDebug()<<"replay:"<<_comport->_reply.toHex();
         }
         else {
             // reply+=SendCommand(CreateModbusWritePacket(100,0x06,0,0),100);
             reply+=SendCommands(CreateModbusWritePacket(100,0x06,0,value),100);
+                   qDebug()<<"replay:"<<_comport->_reply.toHex();
             // reply+=SendCommand(CreateModbusWritePacket(100,0x06,2,0),100);
         }
         _meteringMutex.unlock();
 
     }
-//    else
-//    {
-
-//        _meteringWait.wait(&_meteringMutex, 7000);
-//        if( _meteringMutex.tryLock()){
-
-//            if(color==AlarmColor::Green){
-
-//                reply+=SendCommand(CreateModbusWritePacket(100,0x06,0,value),100);
-
-//                //   reply+=SendCommand(CreateModbusWritePacket(100,0x06,1,0),100);
-
-//                //  reply+=SendCommand(CreateModbusWritePacket(100,0x06,2,0),100);
-//            }
-//            else if (color==AlarmColor::Red)
-//            {
-
-
-//                // reply+=SendCommand(CreateModbusWritePacket(100,0x06,0,0),100);
-
-//                //   reply+=SendCommand(CreateModbusWritePacket(100,0x06,1,0),100);
-
-//                reply+=SendCommand(CreateModbusWritePacket(100,0x06,2,value),100);
-
-//            }
-//            else {
-
-
-//                //reply+=SendCommand(CreateModbusWritePacket(100,0x06,0,0),100);
-
-//                reply+=SendCommand(CreateModbusWritePacket(100,0x06,1,value),100);
-
-//                //  reply+=SendCommand(CreateModbusWritePacket(100,0x06,2,0),100);
-
-//            }
-//            _meteringMutex.unlock();
-//        }
-//    }
-    ///qDebug()<<"modbus reply count==================== "<<reply.count();
     if(reply.count()<8)return false;
     return true;
 
@@ -367,8 +369,7 @@ void ManualModbus::SetPCPower(int chuteID, int status)
 
 
         }
-
-                _meteringMutex.unlock();
+       _meteringMutex.unlock();
 
 }
 

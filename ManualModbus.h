@@ -15,6 +15,7 @@ class ManualModbus : public QObject
     Q_OBJECT
 
     QString _portName;
+    bool _working=false;
 
     QMutex _meteringMutex;
     QWaitCondition _meteringWait;
@@ -23,7 +24,7 @@ class ManualModbus : public QObject
     QFile *_gpioFile;
     QByteArray ModbusCRC(QByteArray data);
     QByteArray CreateModbusWritePacket(int id, int registerType, int registerAddress, int value);
-    ModbusReadingParameters ReadModbusValues();
+
 public:
     enum AlarmColor
     {     Green=0,
@@ -62,11 +63,14 @@ public:
     QByteArray SendCommand(QByteArray packet, int timeout);
     QByteArray SendCommands(QByteArray packet, int timeout = 10, int retry = 1);
     bool Init(QString name, int baudRate);
+
 public slots:
-//    void Start();
+    void ReadModbusValues();
+    void Start();
+    void Stop();
     bool SetFeederSpeed(int chuteID, int speed);
     bool SetFeederPower(int chuteID, int state);
-    bool SetChuteAlarm(AlarmColor color, int value);
+    bool SetChuteAlarm(ManualModbus::AlarmColor color, int value);
     void SetPCPower(int chuteID,int status);
     void SerialPacketCompleted(QByteArray data);
 

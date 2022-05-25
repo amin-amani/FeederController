@@ -22,6 +22,7 @@ public:
     QByteArray ReadAll();
     QByteArray ModbusCRC(QByteArray data);
     bool IsOpen();
+    void Close();
 signals:
     void PacketCompleted(QByteArray);
 

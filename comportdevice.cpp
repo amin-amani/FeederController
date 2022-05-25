@@ -39,12 +39,14 @@ bool ComportDevice::Init(QString portName, int baudRate)
     connect(&_comport,SIGNAL(readyRead()),this,SLOT(ReadyRead()));
    if( _comport.open(QSerialPort::ReadWrite))
    {
+
        return true;
 
 
    }
    else
    {
+       qDebug()<<"ERROR OPEN PORT";
        return  false;
    }
 }
@@ -75,6 +77,11 @@ QByteArray ComportDevice::ReadAll()
 bool ComportDevice::IsOpen()
 {
     return  _comport.isOpen();
+
+}
+void ComportDevice::Close()
+{
+      _comport.close();
 
 }
 //==================================================================================================

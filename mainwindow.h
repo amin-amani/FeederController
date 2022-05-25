@@ -7,6 +7,7 @@
 #include <QDebug>
 #include "ManualModbus.h"
 #include "Types.h"
+#include <QThread>
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -14,8 +15,9 @@ QT_END_NAMESPACE
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-    QSerialPort _comport;
-    ManualModbus _modbus;
+
+    ManualModbus *_modbus=nullptr;
+    QThread *_meteringTread=nullptr;
 
 public:
     MainWindow(QWidget *parent = nullptr);
@@ -23,9 +25,16 @@ public:
 
     QByteArray ModbusCRC(QByteArray data);
     QByteArray CreateModbusWritePacket(int id, int registerType, int registerAddress, int32_t value);
-    bool SetFeederSpeed(int chuteID, int speed);
+
     QByteArray SendCommand(QByteArray packet, int timeout = 10);
+
+signals:
+   bool SetChuteAlarm(ManualModbus::AlarmColor color,int value);
+   bool SetFeederSpeed(int chuteID, int speed);
+   bool SetFeederPower(int chuteID, int state);
 private slots:
+    void ModbusParmetersReadyRead(ModbusReadingParameters values);
+    void ModbusErrorConnection(int errorCode);
     void ComportRedyRead();
     void on_dial_sliderMoved(int position);
 
@@ -40,6 +49,10 @@ private slots:
     void on_BtnSetAlarm_3_clicked();
 
     void on_BtnSetAlarm_2_clicked();
+
+    void on_BtnReadSensors_clicked();
+
+    void on_BtnRefreshPort_clicked();
 
 private:
     Ui::MainWindow *ui;
