@@ -30,6 +30,7 @@ public:
 
     QByteArray SendCommand(QByteArray packet, int timeout = 10);
 
+    void SetSortButtonStat(bool stat);
 signals:
    bool SetChuteAlarm(ManualModbus::AlarmColor color,int value);
    bool SetFeederSpeed(int chuteID, int speed);
@@ -52,7 +53,6 @@ private slots:
 
     void on_BtnSetAlarm_2_clicked();
 
-    void on_BtnReadSensors_clicked();
 
     void on_BtnRefreshPort_clicked();
 

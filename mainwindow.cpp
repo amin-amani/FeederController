@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
         //ports.append(port.portName());
 
     }
-
+SetSortButtonStat(false);
 
 
 
@@ -50,7 +50,18 @@ void MainWindow::on_dial_sliderMoved(int position)
 {
     ui->spinBox->setValue(position);
  }
+void MainWindow::SetSortButtonStat(bool stat)
+{
 
+      ui->BtnSetAlarm->setEnabled(stat);
+      ui->BtnSetAlarm_2->setEnabled(stat);
+      ui->BtnSetAlarm_3->setEnabled(stat);
+      ui->BtnSetSpeed->setEnabled(stat);
+      ui->BtnSetFeederPower->setEnabled(stat);
+
+
+
+}
 
 //=======================================================================================================
 void MainWindow::on_BtnPort_clicked()
@@ -78,6 +89,7 @@ void MainWindow::on_BtnPort_clicked()
         connect(_modbus,SIGNAL(ErrorConnection(int)),this,SLOT(ModbusErrorConnection(int)),Qt::UniqueConnection);
         ///
            ui->BtnPort->setText("Close");
+SetSortButtonStat(true);
 
 
     }
@@ -87,6 +99,7 @@ void MainWindow::on_BtnPort_clicked()
     _modbus->Stop();
     _meteringTread=nullptr;
     _modbus=nullptr;
+    SetSortButtonStat(false);
 
     ui->statusbar->showMessage("port closed");
     ui->BtnPort->setText("Open");
@@ -117,6 +130,7 @@ void MainWindow::on_BtnSetFeederPower_clicked()
 
 void MainWindow::on_BtnSetAlarm_clicked()
 {
+
     static bool stat=false;
     stat=!stat;
     //qDebug()<<"set chute alarm";
@@ -142,12 +156,7 @@ void MainWindow::on_BtnSetAlarm_3_clicked()
 }
 //=================================================================================================
 
-void MainWindow::on_BtnReadSensors_clicked()
-{
 
-
-
-}
 //=================================================================================================
 
 void MainWindow::on_BtnRefreshPort_clicked()

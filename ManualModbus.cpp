@@ -261,17 +261,6 @@ bool ManualModbus::SetFeederSpeed(int chuteID, int speed)
 
             }
 
-//    else
-//    {
-//        _meteringWait.wait(&_meteringMutex, 7000);
-//        _meteringMutex.tryLock(10);
-//        QByteArray reply=SendCommand(CreateModbusWritePacket(chuteID,0x06,0,speed),10);
-
-////        qDebug()<<"replay:"<<reply.toHex();
-//        _meteringMutex.unlock();
-//        if(reply.length()<8)return false;
-//    }
-
 
     return true;
 
@@ -281,9 +270,10 @@ bool ManualModbus::SetFeederSpeed(int chuteID, int speed)
 bool ManualModbus::SetFeederPower(int chuteID, int state)
 {
     QByteArray reply;
-
-//    if(_meteringMutex.tryLock(1000))
-//    {
+    if(_comport==nullptr)return false;
+    if(!_comport->IsOpen())return false;
+    if(_meteringMutex.tryLock(1000))
+    {
         //qDebug()<<"set feeder power not busy: "<<state <<" "<<QThread::currentThreadId(); ;
         if(state==0)
         {
@@ -297,7 +287,7 @@ bool ManualModbus::SetFeederPower(int chuteID, int state)
            // qDebug()<<"replay:"<<_comport->_reply.toHex();
         }
         _meteringMutex.unlock();
-//    }
+   }
 //    else
 //    {
 //        qDebug()<<"waite set feeder power : "<<state <<" "<<QThread::currentThreadId(); ;

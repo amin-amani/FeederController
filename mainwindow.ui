@@ -193,19 +193,6 @@
      <string>Yellow</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="BtnReadSensors">
-    <property name="geometry">
-     <rect>
-      <x>410</x>
-      <y>190</y>
-      <width>121</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Read Sensors</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
