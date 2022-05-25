@@ -57,7 +57,7 @@ QByteArray ComportDevice::SendCommand(QByteArray data)
     if(!_comport.isOpen())return reply;
     _comport.readAll();
     _reply.clear();
-    qDebug()<<"-->>>>>>>"<<data.toHex();
+//    qDebug()<<"-->>>>>>>"<<data.toHex();
     _comport.write(data);
     _comport.flush();
 

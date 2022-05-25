@@ -16,7 +16,7 @@ class ManualModbus : public QObject
 
     QString _portName;
     bool _working=false;
-
+    ModbusReadingParameters val;
     QMutex _meteringMutex;
     QWaitCondition _meteringWait;
     int _baudeRate;
@@ -65,7 +65,7 @@ public:
     bool Init(QString name, int baudRate);
 
 public slots:
-    void ReadModbusValues();
+    ModbusReadingParameters ReadModbusValues();
     void Start();
     void Stop();
     bool SetFeederSpeed(int chuteID, int speed);

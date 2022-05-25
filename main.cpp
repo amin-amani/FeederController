@@ -5,6 +5,7 @@
 void QtRegisterCustomTypes()
 {
     qRegisterMetaType<ManualModbus::AlarmColor>("ManualModbus::AlarmColor");
+      qRegisterMetaType<ManualModbus::AlarmColor>("ModbusReadingParameters");
 
 }
 //========================================================================================

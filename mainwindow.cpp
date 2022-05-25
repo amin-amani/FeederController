@@ -28,7 +28,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::ModbusParmetersReadyRead(ModbusReadingParameters values)
 {
-  qDebug()<<"modbus readyread:"<< values.AirPressure;
+//  qDebug()<<"modbus readyread:"<< values.AirPressure;
   ui->LabCameraTemp1->setText(QString::number( values.TopCameraTemp2));
   ui->LabCameraTemp2->setText(QString::number( values.TopCameraTemp2));
   ui->LabProcessorTemp->setText(QString::number( values.ProcessorTemp));
@@ -56,7 +56,7 @@ void MainWindow::on_dial_sliderMoved(int position)
 void MainWindow::on_BtnPort_clicked()
 {
     ui->statusbar->showMessage("...");
-    qDebug()<<"...";
+//    qDebug()<<"...";
     if(ui->BtnPort->text()=="Open")
     {
         _meteringTread =new QThread();
@@ -68,28 +68,17 @@ void MainWindow::on_BtnPort_clicked()
 
 
         connect(this, SIGNAL(SetChuteAlarm(ManualModbus::AlarmColor,int)), _modbus, SLOT(SetChuteAlarm(ManualModbus::AlarmColor,int)),Qt::QueuedConnection);
-        connect(this, SIGNAL(SetFeederPower(int , int )), _modbus, SLOT(SetFeederPower(int , int )),Qt::UniqueConnection);
-        connect(this, SIGNAL(SetFeederSpeed(int , int )), _modbus, SLOT(SetFeederSpeed(int , int )));////
+        connect(this, SIGNAL(SetFeederPower(int , int )), _modbus, SLOT(SetFeederPower(int , int )),Qt::QueuedConnection);
+        connect(this, SIGNAL(SetFeederSpeed(int , int )), _modbus, SLOT(SetFeederSpeed(int , int )),Qt::QueuedConnection);////
         _modbus->moveToThread(_meteringTread);
         _meteringTread->start();
 
         ///
-        connect(_modbus,SIGNAL(ReadyRead(ModbusReadingParameters)),this,SLOT(ModbusParmetersReadyRead(ModbusReadingParameters)),Qt::UniqueConnection);
+        connect(_modbus,SIGNAL(ReadyRead(ModbusReadingParameters)),this,SLOT(ModbusParmetersReadyRead(ModbusReadingParameters)),Qt::DirectConnection);
         connect(_modbus,SIGNAL(ErrorConnection(int)),this,SLOT(ModbusErrorConnection(int)),Qt::UniqueConnection);
         ///
            ui->BtnPort->setText("Close");
-           qDebug()<<"openining";
 
-//           QThread *_testThread=nullptr;
-//           TestObject *_testObj=nullptr;
-//       _testThread=new QThread();
-//       _testObj=new TestObject();
-//        qDebug()<<"connect signals";
-//       connect(_testThread,SIGNAL(started()),_testObj,SLOT(Start()));
-//       connect(_testObj, SIGNAL(testSignal(ManualModbus::AlarmColor,int)), _modbus, SLOT(SetChuteAlarm(ManualModbus::AlarmColor,int)),Qt::QueuedConnection);
-
-//           _testObj->moveToThread(_testThread);
-//           _testThread->start();
 
     }
     else
@@ -101,7 +90,7 @@ void MainWindow::on_BtnPort_clicked()
 
     ui->statusbar->showMessage("port closed");
     ui->BtnPort->setText("Open");
-      qDebug()<<"closing...";
+     // qDebug()<<"closing...";
     }
 }
 
@@ -130,7 +119,7 @@ void MainWindow::on_BtnSetAlarm_clicked()
 {
     static bool stat=false;
     stat=!stat;
-    qDebug()<<"set chute alarm";
+    //qDebug()<<"set chute alarm";
        emit this->SetChuteAlarm(ManualModbus::AlarmColor::Red,stat);
 
 }
