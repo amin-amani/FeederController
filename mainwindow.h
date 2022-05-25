@@ -8,6 +8,7 @@
 #include "ManualModbus.h"
 #include "Types.h"
 #include <QThread>
+#include <TestObject.h>
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -18,6 +19,8 @@ class MainWindow : public QMainWindow
 
     ManualModbus *_modbus=nullptr;
     QThread *_meteringTread=nullptr;
+
+
 
 public:
     MainWindow(QWidget *parent = nullptr);

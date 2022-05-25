@@ -110,7 +110,9 @@ void ManualModbus::Start()
     while (_working)
     {
     qDebug()<<"check";
-    QThread::msleep(1000);
+
+    WaitMs(1000);
+
     }
     _comport->Close();
     qDebug()<<"closing port";
@@ -317,8 +319,8 @@ bool ManualModbus::SetFeederPower(int chuteID, int state)
 bool ManualModbus::SetChuteAlarm(ManualModbus::AlarmColor color,int value)
 {
 
+    qDebug()<<"====================SetChuteAlarm clicked llll ";
     WaitMs(1);
-//    qDebug()<<"====================SetChuteAlarm clicked llll ";
     QByteArray reply;
     if(_meteringMutex.tryLock(1000))
     {

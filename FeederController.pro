@@ -18,6 +18,7 @@ RC_ICONS = image.ico
 
 SOURCES += \
     ManualModbus.cpp \
+    TestObject.cpp \
     comportdevice.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -25,6 +26,7 @@ SOURCES += \
 
 HEADERS += \
     ManualModbus.h \
+    TestObject.h \
     Types.h \
     comportdevice.h \
     mainwindow.h
