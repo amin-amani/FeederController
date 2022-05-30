@@ -49,18 +49,17 @@ void MainWindow::ComportRedyRead()
 void MainWindow::on_dial_sliderMoved(int position)
 {
     ui->spinBox->setValue(position);
- }
+}
+//=======================================================================================================
 void MainWindow::SetSortButtonStat(bool stat)
 {
 
       ui->BtnSetAlarm->setEnabled(stat);
+      ui->BtnStop->setEnabled(stat);
       ui->BtnSetAlarm_2->setEnabled(stat);
       ui->BtnSetAlarm_3->setEnabled(stat);
       ui->BtnSetSpeed->setEnabled(stat);
       ui->BtnSetFeederPower->setEnabled(stat);
-
-
-
 }
 
 //=======================================================================================================
@@ -88,8 +87,8 @@ void MainWindow::on_BtnPort_clicked()
         connect(_modbus,SIGNAL(ReadyRead(ModbusReadingParameters)),this,SLOT(ModbusParmetersReadyRead(ModbusReadingParameters)),Qt::DirectConnection);
         connect(_modbus,SIGNAL(ErrorConnection(int)),this,SLOT(ModbusErrorConnection(int)),Qt::UniqueConnection);
         ///
-           ui->BtnPort->setText("Close");
-SetSortButtonStat(true);
+        ui->BtnPort->setText("Close");
+        SetSortButtonStat(true);
 
 
     }
@@ -169,4 +168,12 @@ void MainWindow::on_BtnRefreshPort_clicked()
         //ports.append(port.portName());
 
     }
+}
+
+void MainWindow::on_BtnStop_clicked()
+{
+    ui->dial->setValue(0);
+    ui->spinBox->setValue(0);
+    emit SetFeederSpeed(ui->NumChute->value(),ui->spinBox->value());
+
 }

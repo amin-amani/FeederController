@@ -56,6 +56,8 @@ private slots:
 
     void on_BtnRefreshPort_clicked();
 
+    void on_BtnStop_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

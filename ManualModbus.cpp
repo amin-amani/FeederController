@@ -164,9 +164,9 @@ int16_t ManualModbus::ReadParameter(int id,int registerType,int addres,int val)
      else {
         //qDebug()<<"<--"<<rx.toHex();
     }
-    result=(rx[3]&0xff);
+    result=(rx[4]&0xff);
     result<<=8;
-    result+=(rx[4]&0xff);
+    result+=(rx[5]&0xff);
 
     return result;
 }
@@ -181,16 +181,16 @@ ModbusReadingParameters ManualModbus::ReadModbusValues()
 
 //     qDebug()<<"Air="<<result.AirPressure;
     result.TopCameraTemp1= ReadParameter(100,(uint8_t)ModbusRegisterTypes::Reading,(uint8_t)SorterRegisters::TopCamera1,1);
-    //  qDebug()<<"TopCameraTemp1="<<result.TopCameraTemp1;
+//      qDebug()<<"TopCameraTemp1="<<result.TopCameraTemp1;
    result.TopCameraTemp2= ReadParameter(100,(uint8_t)ModbusRegisterTypes::Reading,(uint8_t)SorterRegisters::TopCamera2,1);
-    //   qDebug()<<"TopCameraTemp2="<<result.TopCameraTemp2;
+//       qDebug()<<"TopCameraTemp2="<<result.TopCameraTemp2;
     result.ProcessorTemp= ReadParameter(100,(uint8_t)ModbusRegisterTypes::Reading,(uint8_t)SorterRegisters::ProcessorTemp,1);
 
-    //qDebug()<<"ProcessorTemp="<<result.ProcessorTemp;
+//    qDebug()<<"ProcessorTemp="<<result.ProcessorTemp;
     result.BottomCameraTemp1= ReadParameter(100,(uint8_t)ModbusRegisterTypes::Reading,(uint8_t)SorterRegisters::BottomCamera1,1);
-    // qDebug()<<"BottomCameraTemp1="<< result.BottomCameraTemp1;
+//     qDebug()<<"BottomCameraTemp1="<< result.BottomCameraTemp1;
     result.BottomCameraTemp2= ReadParameter(100,(uint8_t)ModbusRegisterTypes::Reading,(uint8_t)SorterRegisters::BottomCamera2,1);
-    // qDebug()<<"BottomCameraTemp2="<< result.BottomCameraTemp2;
+//     qDebug()<<"BottomCameraTemp2="<< result.BottomCameraTemp2;
 //emit ReadyRead(result);
 
   return  result;
@@ -224,7 +224,7 @@ return reply;
 //=================================================================================================
 QByteArray ManualModbus::SendCommand(QByteArray packet,int timeout=10)
 {
-//qDebug()<<"send.......................";
+  //  qDebug()<<"-->>"<<packet.toHex();
     QSignalSpy spy(_comport, SIGNAL(PacketCompleted(QByteArray)));
     WaitMs(100);
     QByteArray reply;
@@ -235,10 +235,16 @@ QByteArray ManualModbus::SendCommand(QByteArray packet,int timeout=10)
     spy.wait(1);
     SetDirection(false);
     spy.wait(timeout);
+
     if(spy.count()<1)return reply;
     WaitMs(1);
     if(spy.count()>0)
-    return (QByteArray) spy.takeFirst()[0].toByteArray();
+    {
+      reply=spy.takeFirst()[0].toByteArray();
+  //    qDebug()<<"<<--"<<reply.toHex();
+        return reply;
+
+    }
     QByteArray empty;
     return empty;
 }
@@ -376,7 +382,7 @@ void ManualModbus::SetPCPower(int chuteID, int status)
 //=================================================================================================
 void ManualModbus::SerialPacketCompleted(QByteArray data)
 {
-    //qDebug()<<" ManulModbus::SerialPacketCompleted:"<<data.toHex();
+//    qDebug()<<" ManulModbus::SerialPacketCompleted:"<<data.toHex();
 }
 //=================================================================================================
 
