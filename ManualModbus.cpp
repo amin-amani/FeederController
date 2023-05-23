@@ -110,8 +110,8 @@ void ManualModbus::Start()
     while (_working)
     {
           WaitMs(2);
-    val=ReadModbusValues();
-     emit ReadyRead(val);
+    //val=ReadModbusValues();
+   //  emit ReadyRead(val);
 //    qDebug()<<"!!!!!!!!!!!!!!!!!!="<<val.AirPressure;
     WaitMs(1000);
 
@@ -280,8 +280,8 @@ bool ManualModbus::SetFeederPower(int chuteID, int state)
     if(!_comport->IsOpen())return false;
     if(_meteringMutex.tryLock(1000))
     {
-        //qDebug()<<"set feeder power not busy: "<<state <<" "<<QThread::currentThreadId(); ;
-        if(state==0)
+        qDebug()<<"set feeder power not busy: "<<state <<" "<<QThread::currentThreadId(); ;
+        if(state==1)
         {
             reply=SendCommands(CreateModbusWritePacket(chuteID,0x06,0x01,0x0001),10);
           //  qDebug()<<"replay:"<<_comport->_reply.toHex();
