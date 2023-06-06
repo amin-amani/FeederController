@@ -35,6 +35,7 @@ signals:
    bool SetChuteAlarm(ManualModbus::AlarmColor color,int value);
    bool SetFeederSpeed(int chuteID, int speed);
    bool SetFeederPower(int chuteID, int state);
+    void ValveConfig(QByteArray data);
 private slots:
     void ModbusParmetersReadyRead(ModbusReadingParameters values);
     void ModbusErrorConnection(int errorCode);
@@ -57,6 +58,14 @@ private slots:
     void on_BtnRefreshPort_clicked();
 
     void on_BtnStop_clicked();
+
+    void on_NumValveDelay_valueChanged(int arg1);
+
+    void on_NumValveDuration_valueChanged(int arg1);
+
+    void on_NumValveDelay_editingFinished();
+
+    void on_NumValveDuration_editingFinished();
 
 private:
     Ui::MainWindow *ui;

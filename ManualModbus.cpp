@@ -110,8 +110,8 @@ void ManualModbus::Start()
     while (_working)
     {
           WaitMs(2);
-    val=ReadModbusValues();
-     emit ReadyRead(val);
+//    val=ReadModbusValues();
+//     emit ReadyRead(val);
 //    qDebug()<<"!!!!!!!!!!!!!!!!!!="<<val.AirPressure;
     WaitMs(1000);
 
@@ -247,6 +247,17 @@ QByteArray ManualModbus::SendCommand(QByteArray packet,int timeout=10)
     }
     QByteArray empty;
     return empty;
+}
+void ManualModbus::ValveConfig(QByteArray data)
+
+{
+    QByteArray result;
+
+result.append(data);
+
+   QByteArray test = ModbusCRC(result);
+   qDebug()<<test.toHex();
+    _comport->SendCommand(test);
 }
 //=================================================================================================
 bool ManualModbus::SetFeederSpeed(int chuteID, int speed)

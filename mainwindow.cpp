@@ -79,6 +79,7 @@ void MainWindow::on_BtnPort_clicked()
 
         connect(this, SIGNAL(SetChuteAlarm(ManualModbus::AlarmColor,int)), _modbus, SLOT(SetChuteAlarm(ManualModbus::AlarmColor,int)),Qt::QueuedConnection);
         connect(this, SIGNAL(SetFeederPower(int , int )), _modbus, SLOT(SetFeederPower(int , int )),Qt::QueuedConnection);
+          connect(this, SIGNAL(ValveConfig(QByteArray )), _modbus, SLOT(ValveConfig(QByteArray )),Qt::QueuedConnection);//aa
         connect(this, SIGNAL(SetFeederSpeed(int , int )), _modbus, SLOT(SetFeederSpeed(int , int )),Qt::QueuedConnection);////
         _modbus->moveToThread(_meteringTread);
         _meteringTread->start();
@@ -176,4 +177,50 @@ void MainWindow::on_BtnStop_clicked()
     ui->spinBox->setValue(0);
     emit SetFeederSpeed(ui->NumChute->value(),ui->spinBox->value());
 
+}
+
+void MainWindow::on_NumValveDelay_valueChanged(int arg1)
+{
+
+}
+
+void MainWindow::on_NumValveDuration_valueChanged(int arg1)
+{
+
+//    QByteArray data;
+//    data.append(0x01);
+//    data.append(0x06);
+//    data.append((char)0x00);
+//    data.append(0x05);
+//    data.append(arg1>>8);
+//    data.append(arg1);
+//    emit ValveConfig(data);
+}
+
+void MainWindow::on_NumValveDelay_editingFinished()
+{
+    QByteArray data;
+   // 0x01	0x06	0x00	0x06	Value	Value	CRC1	CRC2
+    data.append(0x01);
+    data.append(0x06);
+    data.append((char)0x00);
+    data.append(0x06);
+    data.append(ui->NumValveDelay->value()>>8);
+    data.append(ui->NumValveDelay->value());
+    qDebug()<<data.toHex();
+     emit ValveConfig(data);
+}
+
+void MainWindow::on_NumValveDuration_editingFinished()
+{
+    QByteArray data;
+   // 0x01	0x06	0x00	0x05	Value	Value	CRC1	CRC2
+    data.append(0x01);
+    data.append(0x06);
+    data.append((char)0x00);
+    data.append(0x05);
+    data.append(ui->NumValveDuration->value()>>8);
+    data.append(ui->NumValveDuration->value());
+    qDebug()<<data.toHex();
+     emit ValveConfig(data);
 }

@@ -64,6 +64,7 @@ public:
     QByteArray SendCommands(QByteArray packet, int timeout = 10, int retry = 1);
     bool Init(QString name, int baudRate);
 
+
 public slots:
     ModbusReadingParameters ReadModbusValues();
     void Start();
@@ -73,6 +74,7 @@ public slots:
     bool SetChuteAlarm(ManualModbus::AlarmColor color, int value);
     void SetPCPower(int chuteID,int status);
     void SerialPacketCompleted(QByteArray data);
+    void ValveConfig(QByteArray data);
 
 signals:
 
