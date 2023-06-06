@@ -224,3 +224,29 @@ void MainWindow::on_NumValveDuration_editingFinished()
     qDebug()<<data.toHex();
      emit ValveConfig(data);
 }
+
+void MainWindow::on_BtnWriteLightIntensity_clicked()
+{
+    QByteArray data;
+
+    data.append(ui->NumChute->value()&0xff);
+    data.append(0x06);
+    data.append((char)0x00);
+    data.append(0x1c);
+    data.append(ui->NumLightIntensity->value()>>8);
+    data.append(ui->NumLightIntensity->value());
+     emit ValveConfig(data);
+}
+
+void MainWindow::on_BtnReadLightIntensity_clicked()
+{
+    QByteArray data;
+
+    data.append(ui->NumChute->value()&0xff);
+    data.append(0x03);
+    data.append((char)0x00);
+    data.append(0x01);
+    data.append((char)0x00);
+    data.append((char)0x00);
+     emit ValveConfig(data);
+}

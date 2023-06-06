@@ -36,6 +36,7 @@ signals:
    bool SetFeederSpeed(int chuteID, int speed);
    bool SetFeederPower(int chuteID, int state);
     void ValveConfig(QByteArray data);
+
 private slots:
     void ModbusParmetersReadyRead(ModbusReadingParameters values);
     void ModbusErrorConnection(int errorCode);
@@ -66,6 +67,10 @@ private slots:
     void on_NumValveDelay_editingFinished();
 
     void on_NumValveDuration_editingFinished();
+
+    void on_BtnWriteLightIntensity_clicked();
+
+    void on_BtnReadLightIntensity_clicked();
 
 private:
     Ui::MainWindow *ui;
